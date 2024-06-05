@@ -1,26 +1,50 @@
+cmake_minimum_required(VERSION 3.16)
 project(AKAZE)
 
-cmake_minimum_required (VERSION 2.6)
-if (COMMAND cmake_policy)
-  cmake_policy(SET CMP0003 NEW)
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -O3 -march=native ")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -O3 -march=native")
+set (CMAKE_CXX_STANDARD 17)
+
+add_compile_options(-Wextra -Wpedantic)
+
+set(SRCS_AKAZE
+  lib/AKAZE.cpp
+  lib/fed.cpp
+  lib/nldiffusion_functions.cpp
+  lib/utils.cpp
+)
+  
+find_package(OpenCV REQUIRED)
+find_package(Doxygen)
+if (NOT APPLE)
+  find_package(OpenMP)
+  if(OPENMP_FOUND)
+     MESSAGE("OpenMP found")
+     SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
+     SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS}")
+  endif(OPENMP_FOUND)
 endif ()
 
-# ============================================================================ #
-# Build Type. By default is release
-set(CMAKE_BUILD_TYPE "Release" CACHE STRING "Choose the type of build, options are: Debug, Release" FORCE)
 
-# ============================================================================ #
-# Where to output binaries and libraries
-set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/lib")
-set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/lib")
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/bin")
+add_library(${PROJECT_NAME} SHARED ${SRCS_AKAZE})
+target_include_directories(${PROJECT_NAME} PUBLIC 
+	"${PROJECT_SOURCE_DIR}/lib"
+)
 
-# ============================================================================ #
-# Where to install the AKAZE library
-set(AKAZE_INSTALL_PREFIX "/usr/local/akaze/lib" CACHE PATH "Installation Directory")
-set(AKAZE_INCLUDE_PREFIX "/usr/local/akaze/include" CACHE PATH "Includes Directory")
+target_link_libraries(${PROJECT_NAME} ${OpenCV_LIBRARIES})
 
-# ============================================================================ #
-# CPP sources
-message(STATUS ">>> Adding src subdirectory")
-add_subdirectory(src)
+configure_file(lib/akaze.cmake.in
+  "${PROJECT_BINARY_DIR}/akazeConfig.cmake" @ONLY)
+
+install(TARGETS ${PROJECT_NAME}
+        RUNTIME DESTINATION  ${CMAKE_INSTALL_PREFIX}/bin
+        LIBRARY DESTINATION  ${CMAKE_INSTALL_PREFIX}/lib
+        ARCHIVE DESTINATION  ${CMAKE_INSTALL_PREFIX}/lib)
+        
+install(DIRECTORY
+	"${PROJECT_SOURCE_DIR}/lib"
+        DESTINATION  ${CMAKE_INSTALL_PREFIX}/include
+        FILES_MATCHING PATTERN "*.h")
+                                          
+install(FILES "${PROJECT_BINARY_DIR}/akazeConfig.cmake" 
+  DESTINATION ${CMAKE_INSTALL_PREFIX}/lib/cmake/brisk/)  
