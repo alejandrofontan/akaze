@@ -47,4 +47,4 @@ install(DIRECTORY
         FILES_MATCHING PATTERN "*.h")
                                           
 install(FILES "${PROJECT_BINARY_DIR}/akazeConfig.cmake" 
-  DESTINATION ${CMAKE_INSTALL_PREFIX}/lib/cmake/brisk/)  
+  DESTINATION ${CMAKE_INSTALL_PREFIX}/lib/cmake/akaze/)  
