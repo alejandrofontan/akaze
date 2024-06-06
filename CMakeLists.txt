@@ -28,7 +28,7 @@ endif ()
 
 add_library(${PROJECT_NAME} SHARED ${SRCS_AKAZE})
 target_include_directories(${PROJECT_NAME} PUBLIC 
-	"${PROJECT_SOURCE_DIR}/akaze"
+	"${PROJECT_SOURCE_DIR}"
 )
 
 target_link_libraries(${PROJECT_NAME} ${OpenCV_LIBRARIES})
@@ -42,8 +42,8 @@ install(TARGETS ${PROJECT_NAME}
         ARCHIVE DESTINATION  ${CMAKE_INSTALL_PREFIX}/lib)
              
 install(DIRECTORY
-	"${PROJECT_SOURCE_DIR}/akaze"
-        DESTINATION  ${CMAKE_INSTALL_PREFIX}/include
+	"${PROJECT_SOURCE_DIR}"
+        DESTINATION  ${CMAKE_INSTALL_PREFIX}/include/akaze
         FILES_MATCHING PATTERN "*.h")
                                                   
 install(FILES "${PROJECT_BINARY_DIR}/akazeConfig.cmake" 
