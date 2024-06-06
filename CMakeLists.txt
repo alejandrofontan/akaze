@@ -8,10 +8,10 @@ set (CMAKE_CXX_STANDARD 17)
 add_compile_options(-Wextra -Wpedantic)
 
 set(SRCS_AKAZE
-  lib/AKAZE.cpp
-  lib/fed.cpp
-  lib/nldiffusion_functions.cpp
-  lib/utils.cpp
+  src/AKAZE.cpp
+  src/fed.cpp
+  src/nldiffusion_functions.cpp
+  src/utils.cpp
 )
   
 find_package(OpenCV REQUIRED)
@@ -42,7 +42,7 @@ install(TARGETS ${PROJECT_NAME}
         ARCHIVE DESTINATION  ${CMAKE_INSTALL_PREFIX}/lib)
         
 install(DIRECTORY
-	"${PROJECT_SOURCE_DIR}/lib"
+	"${PROJECT_SOURCE_DIR}/include"
         DESTINATION  ${CMAKE_INSTALL_PREFIX}/include/akaze
         FILES_MATCHING PATTERN "*.h")
                                           
