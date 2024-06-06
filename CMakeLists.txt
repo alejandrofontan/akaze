@@ -42,8 +42,8 @@ install(TARGETS ${PROJECT_NAME}
         ARCHIVE DESTINATION  ${CMAKE_INSTALL_PREFIX}/lib)
              
 install(DIRECTORY
-	"${PROJECT_SOURCE_DIR}/"
-        DESTINATION  ${CMAKE_INSTALL_PREFIX}/include/akaze
+	"${PROJECT_SOURCE_DIR}/akaze"
+        DESTINATION  ${CMAKE_INSTALL_PREFIX}/include
         FILES_MATCHING PATTERN "*.h")
                                                   
 install(FILES "${PROJECT_BINARY_DIR}/akazeConfig.cmake" 
