@@ -28,7 +28,7 @@ endif ()
 
 add_library(${PROJECT_NAME} SHARED ${SRCS_AKAZE})
 target_include_directories(${PROJECT_NAME} PUBLIC 
-	"${PROJECT_SOURCE_DIR}/include"
+	"${PROJECT_SOURCE_DIR}/akaze"
 )
 
 target_link_libraries(${PROJECT_NAME} ${OpenCV_LIBRARIES})
