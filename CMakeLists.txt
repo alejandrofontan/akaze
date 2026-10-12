@@ -21,15 +21,15 @@ set(SRCS_AKAZE
 )
   
 find_package(OpenCV REQUIRED)
-find_package(Doxygen)
-if (NOT APPLE)
-  find_package(OpenMP)
-  if(OPENMP_FOUND)
-     MESSAGE("OpenMP found")
-     SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
-     SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS}")
-  endif(OPENMP_FOUND)
-endif ()
+# OpenMP on every platform: Apple's own clang has no libomp, but conda's clang + llvm-openmp (what the conda
+# package and AllFeature-VSLAM use on macOS) does, so the former `if(NOT APPLE)` guard only cost the parallel loops.
+# Without OpenMP the sources still build single-threaded (the pragmas and omp_* calls sit behind _OPENMP).
+find_package(OpenMP)
+if(OpenMP_CXX_FOUND)
+  message(STATUS "akaze: OpenMP ${OpenMP_CXX_VERSION}")
+else()
+  message(STATUS "akaze: OpenMP not found, single-threaded build")
+endif()
 
 
 add_library(${PROJECT_NAME} SHARED ${SRCS_AKAZE})
@@ -38,6 +38,9 @@ target_include_directories(${PROJECT_NAME} PUBLIC
 )
 
 target_link_libraries(${PROJECT_NAME} ${OpenCV_LIBRARIES})
+if(OpenMP_CXX_FOUND)
+  target_link_libraries(${PROJECT_NAME} OpenMP::OpenMP_CXX)
+endif()
 
 configure_file(src/akaze.cmake.in
   "${PROJECT_BINARY_DIR}/akazeConfig.cmake" @ONLY)
